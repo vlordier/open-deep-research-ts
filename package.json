@@ -1,0 +1,61 @@
+{
+  "name": "deep_research",
+  "version": "0.1.4",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "dev:watch": "tsx --watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsc -p tsconfig.tests.json && node --test dist/tests/**/*.test.js",
+    "discovery": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/model-discovery.js",
+    "print:config": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/print-config.js",
+    "ping:models": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/ping-models.js",
+    "smoke": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/smoke-invoke.js",
+    "smoke:anthropic": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/smoke-anthropic.js",
+    "smoke:tavily": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/smoke-tavily.js",
+    "smoke:agent": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/smoke-agent.js",
+    "cli": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/scripts/cli.js",
+    "smoke:researcher": "tsc -p tsconfig.tests.json && node dist/tests/smoke/smoke-researcher.js",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "format": "prettier --write .",
+    "knip": "knip"
+  },
+  "dependencies": {
+    "@langchain/anthropic": "^0.3.0",
+    "@langchain/cohere": "^0.3.0",
+    "@langchain/community": "^0.3.55",
+    "@langchain/core": "^0.3.0",
+    "@langchain/google-genai": "^0.2.17",
+    "@langchain/langgraph": "^0.2.74",
+    "@langchain/openai": "^0.6.13",
+    "@langchain/tavily": "^0.1.5",
+    "@langchain/xai": "^0.1.0",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.4.5",
+    "duck-duck-scrape": "^2.2.5",
+    "jsonrepair": "^3.13.0",
+    "langchain": "^0.3.33",
+    "zod": "^3.23.8"
+  },
+  "overrides": {
+    "@langchain/core": "^0.3.0",
+    "@langchain/openai": "^0.6.13"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "knip": "^5.64.1",
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4",
+    "vitest": "^1.6.0"
+  }
+}
