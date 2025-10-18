@@ -4,8 +4,23 @@ All notable changes to the Deep Research TypeScript implementation.
 
 ## [Unreleased]
 
+## [0.1.5] - 2025-10-18
+
+### Parity & Dependencies
+- Aligned `langchain`, `@langchain/core`, `@langchain/langgraph`, and `@langchain/community` versions with the agents-playground reference implementation (LangChain 0.3.36 / LangGraph 0.4.9).
+- Added `@tavily/core` as a direct dependency for the new webpage extraction tool helper.
+
+### Tooling & Runtime
+- Exported `buildTavilySearchTool` and `buildReadWebpageTool` for reuse in custom LangGraph nodes; both support dependency-injection hooks for tests and alternate runtimes.
+- Updated prompt loader to resolve files from the current project root before falling back to the legacy `deep_research/prompts` path.
+
+### CLI
+- Official CLI entry point now lives at `dist/cli/deepresearch.js`; TypeScript runs via `src/cli/deepresearch.ts`.
+- Streaming logs now cover graph/chain lifecycle events, Tavily summaries, webpage fetch previews, and structured retry diagnostics.
+
 ### Docs
-- Expanded README and User Guide with recommended model profiles, highlighting Gemini 2.5 tiers, Anthropic Sonnet 4/4.5, OpenAI GPT-5, and Fireworks Kimi/LLaMA4 options for supervisor, researcher, and summarization roles.
+- README and User Guide now reference the new tool helpers, CLI entry points, and configuration knobs (`CLI_SKIP_CLARIFICATION`, summarisation controls, etc.).
+
 
 ## [0.1.4] - 2025-09-17
 

@@ -86,9 +86,29 @@ function envGet(key: string): string | undefined {
   return undefined;
 }
 
+export function applyTracingDefaults(): void {
+  if (typeof process === "undefined" || !process.env) return;
+  const env = process.env as Record<string, string | undefined>;
+  if (env["LANGCHAIN_TRACING_V2"] == null) env["LANGCHAIN_TRACING_V2"] = "false";
+  if (env["LANGCHAIN_TRACING"] == null) env["LANGCHAIN_TRACING"] = "false";
+  if (env["LANGSMITH_TRACING"] == null) env["LANGSMITH_TRACING"] = "false";
+}
+
+export function disableTracing(): void {
+  applyTracingDefaults();
+  if (typeof process === "undefined" || !process.env) return;
+  const env = process.env as Record<string, string | undefined>;
+  delete env["LANGCHAIN_API_KEY"];
+  delete env["LANGCHAIN_PROJECT"];
+  delete env["LANGCHAIN_ENDPOINT"];
+  delete env["LANGSMITH_API_KEY"];
+  delete env["LANGSMITH_ENDPOINT"];
+}
+
 export function fromRuntimeConfig(
   runtime?: Partial<Configuration>
 ): Configuration {
+  applyTracingDefaults();
   const envOverrides: Partial<Configuration> = {};
   const keys = Object.keys(ConfigurationSchema.shape) as (keyof Configuration)[];
   for (const key of keys) {

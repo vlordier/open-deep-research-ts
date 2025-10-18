@@ -1,6 +1,6 @@
 # Deep Research – User Guide
 
-Version: 0.1.4
+Version: 0.1.5
 
 ## 1. Requirements
 - Node.js 18+
@@ -13,7 +13,7 @@ npm install
 ```
 
 ## 3. Configuration (.env)
-Create a file named `.env` in `deep_research/` (this folder).
+Create a file named `.env` in the project root.
 
 Minimum (use what you have):
 ```bash
@@ -37,13 +37,20 @@ SEARCH_API=tavily
 # Prefer provider-native websearch detection (OpenAI/Anthropic)
 PREFER_NATIVE_SEARCH=true
 
-# Strong supervisor by default
+# Model assignments (override defaults as needed)
 SUPERVISOR_MODEL=openai:gpt-5
+RESEARCH_MODEL=fireworks:accounts/fireworks/models/kimi-k2-instruct-0905
+SUMMARIZATION_MODEL=google:gemini-2.5-flash-preview-05-20
+COMPRESSION_MODEL=fireworks:accounts/fireworks/models/llama4-maverick-instruct-basic
+FINAL_REPORT_MODEL=openai:gpt-5
 
 # Webpage summarization (enabled by default)
 SUMMARIZATION_ENABLED=true
 SUMMARIZATION_MAX_ITEMS=3
 SUMMARIZATION_TIMEOUT_MS=60000
+
+# Optional: skip interactive clarification (non-TTY contexts)
+CLI_SKIP_CLARIFICATION=false
 ```
 
 Notes:
@@ -90,10 +97,17 @@ Examples:
 npm run cli -- "Best compact under-desk exercise bikes available in Europe"
 ```
 
+Under the hood the compiled entry point is `dist/cli/deepresearch.js`. For direct TypeScript execution (useful during development) run:
+
+```bash
+npx tsx src/cli/deepresearch.ts --help
+```
+
 Streaming shows:
-- Graph/chain/node start/end
-- Tool start/end with input/output preview
-- Live token stream for model responses
+- Graph/chain/node start/end markers
+- Tool start/end with input/output previews (Tavily summaries, webpage extracts, etc.)
+- Live token stream for model responses (a newline is appended once streaming completes)
+- Retry/degradation logs from the structured error pipeline
 
 ## 5. Testing
 - `npm run test` compiles TypeScript and runs only `*.test.ts` unit suites under `tests/` (output emitted to `dist/tests/**`).
@@ -128,7 +142,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
-CMD ["node", "dist/scripts/cli.js", "Research topic"]
+CMD ["node", "dist/cli/deepresearch.js", "Research topic"]
 ```
 Build & run:
 ```bash
@@ -145,3 +159,17 @@ docker run --rm -e OPENAI_API_KEY -e MCP_CONFIG deep-research
 ## 11. References
 - LangGraphJS & LangChain TS
 - Model Context Protocol (MCP) servers
+- Tavily Search / Extract APIs
+
+## 12. Extending built-in tools
+
+Reusable helpers live in `src/tools/`:
+
+- `buildTavilySearchTool(options)` – wraps Tavily search with optional summarisation and dependency-injection hooks (`loadModule`, `summarization.getModel`).
+- `buildReadWebpageTool(options)` – uses `@tavily/core` extract to fetch raw page content with configurable timeouts and truncation limits.
+
+They power the agent by default but can also be imported into custom LangGraph nodes, web handlers, or tests.
+
+## 13. Customising prompts
+
+Prompts live in `prompts/` at the project root. The loader first checks that directory and only falls back to the legacy `deep_research/prompts` location if necessary. Modify or add markdown prompts there to override copy used by the CLI and agent flows.

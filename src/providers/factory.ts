@@ -15,18 +15,27 @@ function stripProviderPrefix(modelId: string): string {
 
 /** Create an OpenAI chat model via LangChain. */
 export function createOpenAI(options: CreateModelOptions): ChatModel<BaseMessageLike, unknown> {
-  const base: Record<string, unknown> = { model: stripProviderPrefix(options.modelId) };
+  const base: Record<string, unknown> = {
+    model: stripProviderPrefix(options.modelId),
+    ...(options.baseUrl ? { baseURL: options.baseUrl } : {}),
+  };
   if (options.apiKey) base["apiKey"] = options.apiKey;
-  if (options.baseUrl) base["baseURL"] = options.baseUrl;
   const llm = new ChatOpenAI(base as any);
   return llm as unknown as ChatModel<BaseMessageLike, unknown>;
 }
 
 /** Create an Anthropic chat model via LangChain. */
 export function createAnthropic(options: CreateModelOptions): ChatModel<BaseMessageLike, unknown> {
-  const base: Record<string, unknown> = { model: stripProviderPrefix(options.modelId) };
+  const base: Record<string, unknown> = {
+    model: stripProviderPrefix(options.modelId),
+    topP: 1,
+  };
   if (options.apiKey) base["apiKey"] = options.apiKey;
+  if (options.baseUrl) base["baseURL"] = options.baseUrl;
   const llm = new ChatAnthropic(base as any);
+  try {
+    (llm as any).temperature = undefined;
+  } catch {}
   return llm as unknown as ChatModel<BaseMessageLike, unknown>;
 }
 
@@ -64,7 +73,7 @@ export function createFireworks(options: CreateModelOptions): ChatModel<BaseMess
     // Fallback to OpenAI-compatible endpoint for Fireworks
     const base: Record<string, unknown> = {
       model: model.includes("/") ? model : shortModel,
-      baseURL: "https://api.fireworks.ai/inference/v1",
+      baseURL: options.baseUrl || "https://api.fireworks.ai/inference/v1",
     };
     if (options.apiKey) base["apiKey"] = options.apiKey;
     const llm = new ChatOpenAI(base as any);
@@ -91,7 +100,7 @@ export function createTogether(options: CreateModelOptions): ChatModel<BaseMessa
     if (options.apiKey) base["apiKey"] = options.apiKey;
     const llm = new ChatTogetherAI(base as any);
     if (typeof (llm as any).bindTools !== "function") {
-      throw new Error("ChatTogetherAI missing bindTools; fallback");
+      throw new Error("ChatTogetherAI missing bindTools; fallback to OpenAI-compatible");
     }
     return llm as unknown as ChatModel<BaseMessageLike, unknown>;
   } catch (_e) {

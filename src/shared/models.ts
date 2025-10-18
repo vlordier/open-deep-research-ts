@@ -82,28 +82,53 @@ export function resolveModelClass(modelId: string, options?: ResolveOptions): Mo
   // xAI / Grok
   if (id.startsWith("xai:") || id.includes("grok")) {
     if (id.includes("grok-4-0709") || id.includes("grok-code-fast-1")) return "256K";
+    if (id.includes("grok-4-fast-reasoning") || id.includes("grok-4-fast-non-reasoning")) return "2M";
     return "256K";
   }
 
   // Fireworks (explicit model id mappings using fully-qualified ids)
   if (id.startsWith("fireworks:") || id.includes("accounts/fireworks/models/")) {
-    if (id.includes("llama4-maverick-instruct-basic") || id.includes("llama4-scout-instruct-basic")) return "1M";
+    // Llama 4 large context
+    if (id.includes("llama4-maverick-instruct-basic") || id.includes("llama4-scout-instruct-basic")) return "1M"; // 1,048,576
+
+    // DeepSeek family
     if (id.includes("deepseek-v3p1") || id.includes("deepseek-v3-0324")) return "200K"; // 163,840
     if (id.includes("deepseek-v3")) return "128K"; // 131,072
-    if (id.includes("deepseek-r1")) return "200K"; // 163,840
-    if (id.includes("qwen3-235b-a22b-thinking-2507") || id.includes("qwen3-235b-a22b-instruct-2507")) return "256K";
-    if (id.includes("qwen3-235b-a22b")) return "128K";
-    if (id.includes("qwen3-30b-a3b-instruct-2507") || id.includes("qwen3-coder-30b-a3b-instruct")) return "256K";
-    if (id.includes("qwen3-30b-a3b-thinking-2507")) return "256K";
-    if (id.includes("qwen3-coder-480b-a35b-instruct")) return "256K";
-    if (id.includes("qwen3-embedding-8b")) return "32K"; // 40,960
-    if (id.includes("qwen2p5-vl-32b-instruct")) return "128K";
-    if (id.includes("glm-4p5-air") || id.includes("glm-4p5")) return "128K";
-    if (id.includes("gpt-oss-120b") || id.includes("gpt-oss-20b")) return "128K";
-    if (id.includes("kimi-k2-instruct-0905")) return "256K";
-    if (id.includes("kimi-k2-instruct")) return "128K";
-    if (id.includes("mixtral-8x22b-instruct")) return "32K";
-    if (id.includes("llama-v3p1-405b-instruct") || id.includes("llama-v3p1-70b-instruct") || id.includes("llama-v3p1-8b-instruct") || id.includes("llama-v3p3-70b-instruct")) return "128K";
+    if (id.includes("deepseek-r1")) return "200K"; // 163,840 (r1 & r1-basic)
+
+    // Qwen3 families
+    if (id.includes("qwen3-235b-a22b-thinking-2507") || id.includes("qwen3-235b-a22b-instruct-2507")) return "256K"; // 262,144
+    if (id.includes("qwen3-235b-a22b")) return "128K"; // 131,072
+    if (id.includes("qwen3-30b-a3b-instruct-2507") || id.includes("qwen3-coder-30b-a3b-instruct")) return "256K"; // 262,144
+    if (id.includes("qwen3-30b-a3b-thinking-2507")) return "256K"; // assume same as instruct variant
+    if (id.includes("qwen3-coder-480b-a35b-instruct")) return "256K"; // 262,144
+    if (id.includes("qwen3-embedding-8b")) return "32K"; // 40,960 → closest class
+    if (id.includes("qwen2p5-vl-32b-instruct")) return "128K"; // 128,000
+
+    // GLM
+    if (id.includes("glm-4p5-air") || id.includes("glm-4p5")) return "128K"; // 131,072
+
+    // gpt-oss
+    if (id.includes("gpt-oss-120b") || id.includes("gpt-oss-20b")) return "128K"; // 131,072
+
+    // Kimi
+    if (id.includes("kimi-k2-instruct-0905")) return "256K"; // 262,144
+    if (id.includes("kimi-k2-instruct")) return "128K"; // 131,072
+
+    // Mixtral
+    if (id.includes("mixtral-8x22b-instruct")) return "32K"; // 65,536 → closest lower class
+
+    // Llama v3.1 families
+    if (
+      id.includes("llama-v3p1-405b-instruct") ||
+      id.includes("llama-v3p1-70b-instruct") ||
+      id.includes("llama-v3p1-8b-instruct") ||
+      id.includes("llama-v3p3-70b-instruct")
+    ) {
+      return "128K"; // 131,072
+    }
+
+    // Default for other Fireworks chat models
     return "256K";
   }
 
@@ -116,9 +141,6 @@ export function resolveModelClass(modelId: string, options?: ResolveOptions): Mo
     if (id.includes("8b")) return "128K";
     return "256K";
   }
-
-  // xAI / Grok
-  if (id.startsWith("xai:") || id.includes("grok")) return "256K";
 
   // Cohere
   if (id.startsWith("cohere:")) return "128K";

@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  classifyError,
+  getRetryStrategy,
   isTokenLimitError,
   isTimeoutError,
   isRateLimitError,
@@ -56,5 +58,20 @@ test("formatErrorBrief truncates long messages", () => {
 test("formatErrorBrief returns message when within limit", () => {
   const formatted = formatErrorBrief(makeError("short"), 50);
   assert.equal(formatted, "short");
+});
+
+test("classifyError captures status, code, and retryability", () => {
+  const err = Object.assign(new Error("Rate limit exceeded"), {
+    status: 429,
+    code: "rate_limit_error",
+  });
+  const classified = classifyError(err);
+  assert.equal(classified.category, "RATE_LIMIT");
+  assert.equal(classified.retryable, true);
+  assert.equal(classified.statusCode, 429);
+  assert.equal(classified.code, "rate_limit_error");
+  const strategy = getRetryStrategy(classified);
+  assert.equal(strategy.shouldRetry, true);
+  assert.equal(strategy.maxAttempts > 0, true);
 });
 

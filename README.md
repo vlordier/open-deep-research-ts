@@ -1,12 +1,12 @@
 # Deep Research (TypeScript)
 
-A TypeScript implementation of the deep research agent using LangGraph for multi-agent orchestration. Currently in alpha with basic functionality working.
+A TypeScript implementation of the deep research agent using LangGraph for multi-agent orchestration. Currently in alpha with major functionality working.
 
-## Status: Alpha v0.1.4
+## Status: Alpha v0.1.5
 
 - ✅ **Working**: Supervisor delegation, parallel researchers, real web search, compression, final reports
 - ✅ **Fixed**: Model initialization, tool binding, ResearchComplete termination logic
-- 🔧 **Debug**: Enhanced streaming visibility for development and testing (node/tool lifecycle, token streaming)
+- 🔧 **Debug**: Enhanced streaming visibility for development and testing (node/tool lifecycle, token streaming, structured retries)
 - 🧱 **Resilience**: Retries/timeouts, token-limit truncation, graceful degradation messages
 - 🧰 **Optional**: MCP tool loading via `@langchain/mcp-adapters` (feature-flagged)
 
@@ -85,22 +85,22 @@ npm run build && \
   SUMMARIZATION_MODEL="google:gemini-2.5-flash-preview-05-20" \
   COMPRESSION_MODEL="fireworks:accounts/fireworks/models/llama4-maverick-instruct-basic" \
   FINAL_REPORT_MODEL="openai:gpt-5" \
-  node dist/scripts/cli.js \
-  "Do some research on the pros and cons of Neon versus Supabase Postgres providers. I want to understand them in terms of security, speed, ease of use. In particular I am interested in how well they work with Vercel and GCP as we are building a SaaS apps that use both environments extensively. We are building a SaaS app using TipTap cloud, Prosemirror and HocusPocus along with AI agents in Langgraph and Langchain."
+  node dist/cli/deepresearch.js \
+  "Do some research on the pros and cons of Neon versus Supabase Postgres providers. I want to understand them in terms of security, speed, ease of use. In particular I am interested in how well they work with Vercel and GCP as we are building a SaaS apps that use both environments extensively."
 ```
 
 From source (no build; uses tsx):
 
 ```bash
-npx tsx scripts/cli.ts \
+npx tsx src/cli/deepresearch.ts \
   --research-model fireworks:accounts/fireworks/models/kimi-k2-instruct-0905 \
   --supervisor-model anthropic:claude-sonnet-4-20250514 \
   --summarization-model google:gemini-2.5-flash-preview-05-20 \
   --compression-model fireworks:accounts/fireworks/models/llama4-maverick-instruct-basic \
   --final-report-model openai:gpt-5 \
-  "Do some research on the pros and cons of Neon versus Supabase Postgres providers. I want to understand them in terms of security, speed, ease of use. In particular I am interested in how well they work with Vercel and GCP as we are building a SaaS apps that use both environments extensively. We are building a SaaS app using TipTap cloud, Prosemirror and HocusPocus along with AI agents in Langgraph and Langchain."
+  "Do some research on the pros and cons of Neon versus Supabase Postgres providers. I want to understand them in terms of security, speed, ease of use. In particular I am interested in how well they work with Vercel and GCP as we are building a SaaS apps that use both environments extensively."
 
-npx tsx scripts/cli.ts \
+npx tsx src/cli/deepresearch.ts \
   --research-model fireworks:accounts/fireworks/models/kimi-k2-instruct-0905 \
   --supervisor-model anthropic:claude-sonnet-4-20250514 \
   --summarization-model google:gemini-2.5-flash-preview-05-20 \
@@ -110,9 +110,19 @@ npx tsx scripts/cli.ts \
 ```
 
 Streaming is enabled by default and shows:
-- node/tool start/end
-- model token stream
-- tool input/output previews
+- graph/chain/node lifecycle events
+- tool start/end with input/output previews (including Tavily summaries and webpage fetch metadata)
+- live model token streams (with automatic newline handling after stream completion)
+- retry/degradation logs from the structured error pipeline
+
+### Built-in tool helpers
+
+Need the same behaviour elsewhere? Import our helpers directly:
+
+- `buildTavilySearchTool(options)` – wraps Tavily search with optional in-band summarisation, dependency injection hooks (`loadModule`, `summarization.getModel`), and deterministic result shaping used by the agent.
+- `buildReadWebpageTool(options)` – uses `@tavily/core` extract to pull raw page content with timeouts, preview truncation, and error handling baked in.
+
+Both are defined in `src/tools/` and ship with defaults that mirror the agent configuration. Pass your own loggers/models if you embed them in other LangGraph nodes.
 
 ### Development
 ```bash

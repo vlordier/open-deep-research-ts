@@ -9,6 +9,9 @@ import { createModel } from "../providers/router.js";
 import { extractTextFromResponse } from "../shared/messages.js";
 import { loadMcpTools } from "../mcp/client.js";
 
+export { buildTavilySearchTool, type TavilySearchOptions, type TavilySummarizationOptions } from "./web_search.js";
+export { buildReadWebpageTool, type ReadWebpageOptions, type ReadWebpageResult } from "./read_webpage.js";
+
 export type Tools = {
   search: SearchTool;
 };
