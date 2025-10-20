@@ -1,6 +1,6 @@
-# Deep Research (TypeScript)
+# Open Deep Research (TypeScript)
 
-A TypeScript implementation of the deep research agent using LangGraph for multi-agent orchestration. The project builds on the excellent [LangChain Open Deep Research](https://github.com/langchain-ai/open_deep_research) reference implementation, while adding TypeScript-specific tooling, structured error handling, reusable Tavily helpers, and a streamlined CLI experience.
+A TypeScript implementation of the open deep research agent using LangGraph for multi-agent orchestration. The project builds on the excellent [LangChain Open Deep Research](https://github.com/langchain-ai/open_deep_research) reference implementation, while adding TypeScript-specific tooling, structured error handling, reusable Tavily helpers, and a streamlined CLI experience.
 
 ## Status: Alpha v0.1.5
 
