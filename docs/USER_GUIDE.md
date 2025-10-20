@@ -134,34 +134,18 @@ Streaming shows:
 ## 8. Native Websearch (OpenAI/Anthropic)
 If `PREFER_NATIVE_SEARCH=true`, the researcher respects provider-native websearch calls (detected heuristically) even if LangChain `tool_calls` are absent.
 
-## 9. Docker (basic example)
-```dockerfile
-# Dockerfile (example)
-FROM node:18-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["node", "dist/cli/deepresearch.js", "Research topic"]
-```
-Build & run:
-```bash
-docker build -t deep-research .
-docker run --rm -e OPENAI_API_KEY -e MCP_CONFIG deep-research
-```
-
-## 10. Troubleshooting
+## 9. Troubleshooting
 - "@langchain/mcp-adapters not installed; skipping MCP tools": install the package or remove MCP_CONFIG
 - Token/context limit errors: agent will retry and truncate; check logs for truncation notices
 - Rate limits (429): retries apply with extended backoff; consider provider quotas
 - No final report: ensure provider keys are set; see CLI end-of-run summary
 
-## 11. References
+## 10. References
 - LangGraphJS & LangChain TS
 - Model Context Protocol (MCP) servers
 - Tavily Search / Extract APIs
 
-## 12. Extending built-in tools
+## 11. Extending built-in tools
 
 Reusable helpers live in `src/tools/`:
 
@@ -170,6 +154,6 @@ Reusable helpers live in `src/tools/`:
 
 They power the agent by default but can also be imported into custom LangGraph nodes, web handlers, or tests.
 
-## 13. Customising prompts
+## 12. Customising prompts
 
 Prompts live in `prompts/` at the project root. The loader first checks that directory and only falls back to the legacy `deep_research/prompts` location if necessary. Modify or add markdown prompts there to override copy used by the CLI and agent flows.

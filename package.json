@@ -19,7 +19,7 @@
     "smoke:anthropic": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/smoke-anthropic.js",
     "smoke:tavily": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/smoke-tavily.js",
     "smoke:agent": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/tests/smoke/smoke-agent.js",
-    "cli": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/scripts/cli.js",
+    "cli": "tsc -p tsconfig.tests.json && node -r dotenv/config dist/cli/deepresearch.js",
     "smoke:researcher": "tsc -p tsconfig.tests.json && node dist/tests/smoke/smoke-researcher.js",
     "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "format": "prettier --write .",
