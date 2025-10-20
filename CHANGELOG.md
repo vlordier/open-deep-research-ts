@@ -20,6 +20,7 @@ All notable changes to the Deep Research TypeScript implementation.
 
 ### Docs
 - README and User Guide now reference the new tool helpers, CLI entry points, and configuration knobs (`CLI_SKIP_CLARIFICATION`, summarisation controls, etc.).
+- Added attribution noting this TypeScript port is based on the LangChain [Open Deep Research](https://github.com/langchain-ai/open_deep_research) project with additional TS-specific improvements.
 
 
 ## [0.1.4] - 2025-09-17
