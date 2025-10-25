@@ -22,11 +22,40 @@ npm install
 3. Create `.env` in this folder with any keys you have:
 
 ```
-OPENAI_API_KEY=...
-ANTHROPIC_API_KEY=...
-GOOGLE_API_KEY=...
-FIREWORKS_API_KEY=...
-XAI_API_KEY=...
+# OpenAI API Configuration
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# Anthropic API Configuration
+ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key-here
+
+# Google AI/Vertex API Configuration
+GOOGLE_API_KEY=your-google-ai-api-key-here
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/service-account.json
+
+# Tavily Search API
+TAVILY_API_KEY=tvly-your-tavily-api-key-here
+
+# Optional: Additional Model Providers
+GROQ_API_KEY=your-groq-api-key-here
+COHERE_API_KEY=your-cohere-api-key-here
+FIREWORKS_API_KEY=your-fireworks-api-key-here
+XAI_API_KEY=your-xai-api-key-here
+TOGETHER_API_KEY=your-together-api-key-here
+
+
+# Optional: MCP Configuration
+MCP_CONFIG_URL=https://your-mcp-server.com
+MCP_AUTH_REQUIRED=false
+
+# Optional: LangSmith Tracing
+LANGCHAIN_TRACING_V2=false
+LANGCHAIN_API_KEY=your-langsmith-api-key-here
+LANGCHAIN_PROJECT=open-deep-research
+
+# Research Configuration
+MAX_CONCURRENT_RESEARCH_UNITS=5
+ALLOW_CLARIFICATION=true
+SEARCH_API=tavily
 ```
 
 Optional overrides & config:
