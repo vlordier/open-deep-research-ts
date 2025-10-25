@@ -22,40 +22,36 @@ npm install
 3. Create `.env` in this folder with any keys you have:
 
 ```
-# OpenAI API Configuration
-OPENAI_API_KEY=sk-your-openai-api-key-here
+# Core provider keys (use what you have)
+OPENAI_API_KEY=...
+ANTHROPIC_API_KEY=...
+GOOGLE_API_KEY=...
+FIREWORKS_API_KEY=...
+XAI_API_KEY=...
+TOGETHER_API_KEY=...
+TAVILY_API_KEY=...
 
-# Anthropic API Configuration
-ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key-here
+# Optional: Google service account path (if required by your setup)
+# GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 
-# Google AI/Vertex API Configuration
-GOOGLE_API_KEY=your-google-ai-api-key-here
-GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/service-account.json
-
-# Tavily Search API
-TAVILY_API_KEY=tvly-your-tavily-api-key-here
-
-# Optional: Additional Model Providers
-GROQ_API_KEY=your-groq-api-key-here
-COHERE_API_KEY=your-cohere-api-key-here
-FIREWORKS_API_KEY=your-fireworks-api-key-here
-XAI_API_KEY=your-xai-api-key-here
-TOGETHER_API_KEY=your-together-api-key-here
-
-
-# Optional: MCP Configuration
-MCP_CONFIG_URL=https://your-mcp-server.com
-MCP_AUTH_REQUIRED=false
-
-# Optional: LangSmith Tracing
+# Optional: LangSmith / LangChain tracing
 LANGCHAIN_TRACING_V2=false
-LANGCHAIN_API_KEY=your-langsmith-api-key-here
-LANGCHAIN_PROJECT=open-deep-research
+# LANGCHAIN_API_KEY=...
+# LANGCHAIN_PROJECT=open-deep-research
 
-# Research Configuration
+# Optional: Model assignments / research knobs
+# SUPERVISOR_MODEL=openai:gpt-5
+# RESEARCH_MODEL=fireworks:accounts/fireworks/models/kimi-k2-instruct-0905
+# SUMMARIZATION_MODEL=google:gemini-2.5-flash-preview-05-20
+# COMPRESSION_MODEL=fireworks:accounts/fireworks/models/llama4-maverick-instruct-basic
+# FINAL_REPORT_MODEL=openai:gpt-5
 MAX_CONCURRENT_RESEARCH_UNITS=5
 ALLOW_CLARIFICATION=true
 SEARCH_API=tavily
+CLI_SKIP_CLARIFICATION=false
+
+# Optional: MCP configuration (JSON string)
+MCP_CONFIG='{"url":"http://localhost:8000/mcp","auth_required":false}'
 ```
 
 Optional overrides & config:
