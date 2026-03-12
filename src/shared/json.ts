@@ -2,6 +2,7 @@ import { jsonrepair } from "jsonrepair";
 
 const MAX_INPUT_PREVIEW_LENGTH = 120;
 
+/** Normalize whitespace and truncate raw JSON input for inclusion in error previews. */
 function toInputPreview(raw: string, maxLength = MAX_INPUT_PREVIEW_LENGTH): string | undefined {
   const normalized = raw.replace(/\s+/g, " ").trim();
   if (!normalized) return undefined;
