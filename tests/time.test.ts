@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { sleep, withTimeout } from "../src/shared/time.js";
+import { currentDateString, sleep, withTimeout } from "../src/shared/time.js";
 import { invokeWithRetry } from "../src/shared/invoke.js";
 
 test("sleep resolves after the specified duration", async (t) => {
@@ -25,6 +25,10 @@ test("withTimeout rejects when promise exceeds timeout", async (t) => {
   const timed = withTimeout(never, 25, "job");
   t.mock.timers.tick(25);
   await assert.rejects(timed, /job timed out after 25ms/);
+});
+
+test("currentDateString returns ISO calendar date", () => {
+  assert.equal(currentDateString(), new Date().toISOString().slice(0, 10));
 });
 
 test("invokeWithRetry retries retryable errors then succeeds", async () => {
@@ -65,4 +69,3 @@ test("invokeWithRetry stops immediately on non-retryable errors", async () => {
   );
   assert.equal(callCount, 1);
 });
-
