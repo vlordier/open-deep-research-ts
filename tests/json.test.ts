@@ -37,4 +37,42 @@ test("repairs Python constants None/True/False", () => {
   assert.deepEqual(out, { a: null, b: true, c: false });
 });
 
+test("throws with cause and input preview for unrecoverable invalid control characters", () => {
+  let thrown: unknown;
+  try {
+    parseJsonSafely('{"a":"\u0000"}');
+  } catch (error) {
+    thrown = error;
+  }
 
+  assert.ok(thrown instanceof Error);
+  assert.match(thrown.message, /^Unrecoverable JSON parse error:/);
+  assert.match(thrown.message, /Invalid character/);
+  assert.ok(thrown.message.includes('Input preview: {"a":"\u0000"}'));
+  assert.ok("cause" in thrown);
+});
+
+test("omits input preview when the raw value is blank", () => {
+  assert.throws(
+    () => parseJsonSafely(""),
+    (error: unknown) =>
+      error instanceof Error &&
+      error.message === "Unrecoverable JSON parse error: Unexpected end of json string at position 0"
+  );
+});
+
+test("normalizes and truncates long input previews for unrecoverable errors", () => {
+  const longRaw = `{
+    "a": 1,,
+    "padding": "${"x".repeat(180)}"
+  }`;
+
+  assert.throws(
+    () => parseJsonSafely(longRaw),
+    (error: unknown) =>
+      error instanceof Error &&
+      /Object key expected at position \d+/.test(error.message) &&
+      error.message.includes('Input preview: { "a": 1,, "padding": "') &&
+      error.message.endsWith("...")
+  );
+});
