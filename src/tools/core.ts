@@ -1,9 +1,10 @@
 import { loadPrompt } from "../prompts/loader.js";
 import type { ClarifyWithUser, ConductResearch, ResearchComplete } from "../shared/types";
+import { currentDateString } from "../shared/time.js";
 
 /** Build clarify-with-user prompt with injected variables. */
 export async function buildClarifyWithUserPrompt(messagesMarkdown: string): Promise<string> {
-  const date = new Date().toISOString().slice(0, 10);
+  const date = currentDateString();
   return loadPrompt("clarify_with_user.md", { date, messages: messagesMarkdown });
 }
 
@@ -12,7 +13,7 @@ export async function buildLeadResearcherPrompt(params: {
   max_researcher_iterations: number;
   max_concurrent_research_units: number;
 }): Promise<string> {
-  const date = new Date().toISOString().slice(0, 10);
+  const date = currentDateString();
   return loadPrompt("lead_researcher.md", {
     date,
     max_researcher_iterations: String(params.max_researcher_iterations),
@@ -22,13 +23,13 @@ export async function buildLeadResearcherPrompt(params: {
 
 /** Build researcher system prompt (tools loop). */
 export async function buildResearchSystemPrompt(mcpPromptSection: string): Promise<string> {
-  const date = new Date().toISOString().slice(0, 10);
+  const date = currentDateString();
   return loadPrompt("research_system.md", { date, mcp_prompt: mcpPromptSection });
 }
 
 /** Build compression system prompt. */
 export async function buildCompressResearchPrompt(): Promise<string> {
-  const date = new Date().toISOString().slice(0, 10);
+  const date = currentDateString();
   return loadPrompt("compress_research.md", { date });
 }
 
@@ -38,7 +39,7 @@ export async function buildFinalReportPrompt(args: {
   messages: string;
   findings: string;
 }): Promise<string> {
-  const date = new Date().toISOString().slice(0, 10);
+  const date = currentDateString();
   return loadPrompt("final_report.md", { date, ...args });
 }
 

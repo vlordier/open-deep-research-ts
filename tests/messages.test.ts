@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { messageContentToString, extractTextFromResponse } from "../src/shared/messages.js";
+import { messageContentToString, extractTextFromResponse, findLastAssistantMessage } from "../src/shared/messages.js";
 
 const makeMsg = (content: unknown) => ({ content }) as any;
 
@@ -42,3 +42,19 @@ test("extractTextFromResponse stringifies unknown content", () => {
   assert.equal(extractTextFromResponse(resp), "[object Object]");
 });
 
+test("findLastAssistantMessage returns the most recent assistant message", () => {
+  const messages = [
+    { role: "user", content: "first" },
+    { role: "assistant", content: "middle" },
+    { role: "tool", content: "ignored" },
+    { role: "assistant", content: "last" },
+  ] as any[];
+
+  const found = findLastAssistantMessage(messages);
+  assert.equal(messageContentToString(found), "last");
+});
+
+test("findLastAssistantMessage returns undefined when absent", () => {
+  const found = findLastAssistantMessage([{ role: "user", content: "only user" }] as any[]);
+  assert.equal(found, undefined);
+});
