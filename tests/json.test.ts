@@ -48,7 +48,7 @@ test("throws with cause and input preview for unrecoverable invalid control char
   assert.ok(thrown instanceof Error);
   assert.match(thrown.message, /^Unrecoverable JSON parse error:/);
   assert.match(thrown.message, /Invalid character/);
-  assert.equal(thrown.message.includes('Input preview: {"a":"\u0000"}'), true);
+  assert.ok(thrown.message.includes('Input preview: {"a":"\u0000"}'));
   assert.ok("cause" in thrown);
 });
 
