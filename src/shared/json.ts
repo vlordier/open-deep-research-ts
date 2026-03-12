@@ -21,9 +21,9 @@ export function parseJsonSafely<T = unknown>(raw: string): T {
       const preview = toInputPreview(raw);
       const detail =
         repairError instanceof Error && repairError.message.trim()
-          ? repairError.message
+          ? repairError.message.trim()
           : typeof repairError === "string" && repairError.trim()
-            ? repairError
+            ? repairError.trim()
             : String(repairError);
       const message = preview
         ? `Unrecoverable JSON parse error: ${detail}. Input preview: ${preview}`
