@@ -86,6 +86,11 @@ function envGet(key: string): string | undefined {
   return undefined;
 }
 
+export function parseBooleanEnvValue(raw: string | undefined): boolean | undefined {
+  if (!raw || !/^(true|false)$/i.test(raw)) return undefined;
+  return raw.toLowerCase() === "true";
+}
+
 export function applyTracingDefaults(): void {
   if (typeof process === "undefined" || !process.env) return;
   const env = process.env as Record<string, string | undefined>;
@@ -116,8 +121,9 @@ export function fromRuntimeConfig(
     const raw = envGet(envKey);
     if (raw == null) continue;
     try {
-      if (/^(true|false)$/i.test(raw)) {
-        (envOverrides as any)[key] = raw.toLowerCase() === "true";
+      const parsedBool = parseBooleanEnvValue(raw);
+      if (parsedBool !== undefined) {
+        (envOverrides as any)[key] = parsedBool;
       } else if (/^\d+$/.test(raw)) {
         (envOverrides as any)[key] = Number(raw);
       } else if (raw.startsWith("{") || raw.startsWith("[")) {

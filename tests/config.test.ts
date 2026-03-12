@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { fromRuntimeConfig, ConfigurationSchema } from "../src/shared/config.js";
+import { fromRuntimeConfig, ConfigurationSchema, parseBooleanEnvValue } from "../src/shared/config.js";
 
 test("config: applies defaults", () => {
   const cfg = fromRuntimeConfig({});
@@ -15,4 +15,12 @@ test("config: env overrides runtime", () => {
   assert.equal(cfg.max_researcher_iterations, 9);
   if (prev === undefined) delete process.env["MAX_RESEARCHER_ITERATIONS"];
   else process.env["MAX_RESEARCHER_ITERATIONS"] = prev;
+});
+
+test("config: parseBooleanEnvValue handles valid and invalid inputs", () => {
+  assert.equal(parseBooleanEnvValue("true"), true);
+  assert.equal(parseBooleanEnvValue("FALSE"), false);
+  assert.equal(parseBooleanEnvValue(""), undefined);
+  assert.equal(parseBooleanEnvValue("1"), undefined);
+  assert.equal(parseBooleanEnvValue(undefined), undefined);
 });
