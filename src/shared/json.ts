@@ -1,6 +1,8 @@
 import { jsonrepair } from "jsonrepair";
 
-function toInputPreview(raw: string, maxLength = 120): string | undefined {
+const MAX_INPUT_PREVIEW_LENGTH = 120;
+
+function toInputPreview(raw: string, maxLength = MAX_INPUT_PREVIEW_LENGTH): string | undefined {
   const normalized = raw.replace(/\s+/g, " ").trim();
   if (!normalized) return undefined;
   return normalized.length > maxLength ? `${normalized.slice(0, maxLength)}...` : normalized;
