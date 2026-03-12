@@ -10,6 +10,7 @@ import { ToolMessage } from "@langchain/core/messages";
 import type { ChatModel } from "../providers/types.js";
 import { invokeWithRetry } from "../shared/invoke.js";
 import { findLastAssistantMessage, messageContentToString } from "../shared/messages.js";
+import { truncateText } from "../shared/text.js";
 import chalk from "chalk";
 
 /** Supervisor subgraph: orchestrates researcher work and tools. */
@@ -175,7 +176,7 @@ async function supervisorTools(state: typeof SupervisorStateAnnotation.State): P
         let supervisorDirective = "";
         const lastAssistant = findLastAssistantMessage(supervisor_messages);
         if (lastAssistant) {
-          supervisorDirective = messageContentToString(lastAssistant).slice(0, 500);
+          supervisorDirective = truncateText(messageContentToString(lastAssistant), 500);
         }
         if (!supervisorDirective) {
           supervisorDirective = `Focus on: ${topic}. Produce credible sources (URLs) and a concise TLDR.`;
@@ -199,7 +200,7 @@ async function supervisorTools(state: typeof SupervisorStateAnnotation.State): P
     console.log(chalk.cyan(`  Total raw notes: ${mergedRaw.length}`));
     console.log(chalk.cyan(`  Compressed notes: ${mergedNotes.length}`));
     if (mergedNotes.length > 0) {
-      console.log(chalk.cyan(`  Notes preview: ${mergedNotes.join(" | ").slice(0, 200)}...`));
+      console.log(chalk.cyan(`  Notes preview: ${truncateText(mergedNotes.join(" | "), 200)}`));
     }
 
     return {
