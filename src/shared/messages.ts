@@ -19,6 +19,13 @@ export function messageContentToString(msg: BaseMessageLike | undefined): string
   return String(content ?? "");
 }
 
+export function findLastAssistantMessage(messages: BaseMessageLike[]): BaseMessageLike | undefined {
+  return messages
+    .slice()
+    .reverse()
+    .find((message) => (message as { role?: unknown })?.role === "assistant");
+}
+
 export function extractTextFromResponse(resp: unknown): string {
   if (resp && typeof resp === "object") {
     const content = (resp as { content?: unknown }).content;
@@ -32,5 +39,4 @@ export function extractTextFromResponse(resp: unknown): string {
   }
   return String(resp ?? "").trim();
 }
-
 

@@ -9,7 +9,7 @@ import type { BaseMessageLike, AIMessage } from "@langchain/core/messages";
 import { ToolMessage } from "@langchain/core/messages";
 import type { ChatModel } from "../providers/types.js";
 import { invokeWithRetry } from "../shared/invoke.js";
-import { messageContentToString } from "../shared/messages.js";
+import { findLastAssistantMessage, messageContentToString } from "../shared/messages.js";
 import chalk from "chalk";
 
 /** Supervisor subgraph: orchestrates researcher work and tools. */
@@ -173,7 +173,7 @@ async function supervisorTools(state: typeof SupervisorStateAnnotation.State): P
         });
         // Extract a brief supervisor directive from the last assistant content (if any)
         let supervisorDirective = "";
-        const lastAssistant = supervisor_messages.slice().reverse().find((m: any) => (m as any)?.role === "assistant");
+        const lastAssistant = findLastAssistantMessage(supervisor_messages);
         if (lastAssistant) {
           supervisorDirective = messageContentToString(lastAssistant).slice(0, 500);
         }
