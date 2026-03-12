@@ -37,7 +37,7 @@ test("repairs Python constants None/True/False", () => {
   assert.deepEqual(out, { a: null, b: true, c: false });
 });
 
-test("throws with cause and input preview when repair is unrecoverable", () => {
+test("throws with cause and input preview for unrecoverable invalid control characters", () => {
   let thrown: unknown;
   try {
     parseJsonSafely('{"a":"\u0000"}');
