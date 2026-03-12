@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { createAgentGraph } from "../agent/graph.js";
 import { fromRuntimeConfig, applyTracingDefaults, disableTracing } from "../shared/config.js";
+import { extractContentType } from "../shared/http.js";
 import { createModel } from "../providers/router.js";
 import { buildClarifyWithUserPrompt } from "../tools/core.js";
 import { parseJsonSafely } from "../shared/json.js";
@@ -22,13 +23,7 @@ async function clarifyLoop(initialBrief: string | undefined, options: ClarifyOpt
     try {
       const url = typeof fetchInput === "string" ? fetchInput : fetchInput?.url ?? String(fetchInput);
       const method = (init?.method ?? "GET").toUpperCase();
-      let contentType = "";
-      const headers = init?.headers;
-      if (headers) {
-        if (headers instanceof Headers) contentType = headers.get("content-type") ?? "";
-        else if (Array.isArray(headers)) contentType = String(headers.find((x) => x[0].toLowerCase() === "content-type")?.[1] ?? "");
-        else if (typeof headers === "object") contentType = String(headers["content-type"] ?? headers["Content-Type"] ?? "");
-      }
+      const contentType = extractContentType(init?.headers);
       if (contentType.includes("multipart")) console.log(`[fetch][multipart] ${method} ${url}`);
     } catch {
       // best-effort logging only
@@ -297,4 +292,3 @@ run().catch((e) => {
   console.error("[CLI Stack]", (e as Error).stack);
   process.exit(1);
 });
-
