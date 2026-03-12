@@ -37,4 +37,26 @@ test("repairs Python constants None/True/False", () => {
   assert.deepEqual(out, { a: null, b: true, c: false });
 });
 
+test("throws with cause and input preview when repair is unrecoverable", () => {
+  let thrown: unknown;
+  try {
+    parseJsonSafely('{"a":"\u0000"}');
+  } catch (error) {
+    thrown = error;
+  }
 
+  assert.ok(thrown instanceof Error);
+  assert.match(thrown.message, /^Unrecoverable JSON parse error:/);
+  assert.match(thrown.message, /Invalid character/);
+  assert.match(thrown.message, /Input preview: \{"a":"\u0000"\}/);
+  assert.ok("cause" in thrown);
+});
+
+test("omits input preview when the raw value is blank", () => {
+  assert.throws(
+    () => parseJsonSafely(""),
+    (error: unknown) =>
+      error instanceof Error &&
+      error.message === "Unrecoverable JSON parse error: Unexpected end of json string at position 0"
+  );
+});
